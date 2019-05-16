@@ -3,25 +3,31 @@ from random import randint
 import time
 from selenium.webdriver.common.by import By
 import accountInfoGenerator as account
+import json
 
 def createAccount():
     browser= webdriver.Chrome("/usr/local/bin/chromedriver")
     browser.get("http://www.instagram.com")
     time.sleep(10) #time.sleep count can be changed depending on the Internet speed.
     
-
+    #Generate User details
     email = account.generatingEmail()
     username = account.username()
     fullname = account.generatingName()
     password = 'aa12345bb12345cc'+username
 
-    #Save to File
-    f=open("user_details.txt", "a+")
-    f.write("email "+ email+"\n")
-    f.write("username "+ username+"\n")
-    f.write("fullname "+ fullname+"\n")
-    f.write("password "+ password+"\n")
-    f.close
+    #Save to File in json Format
+    data = {}  
+    data['users'] = []  
+    data['users'].append({  
+        'email': email,
+        'username': username,
+        'fullname': fullname,
+        'password': password
+        })
+
+    with open('data.txt', 'w') as outfile:  
+        json.dump(data, outfile)
 
     #Fill the email value
     email_field = browser.find_element_by_name('emailOrPhone')
